@@ -11,7 +11,7 @@ A **Django-powered** application to manage user subscriptions with **real-time U
 - **Backend**: Django + Django REST Framework  
 - **Asynchronous Tasks**: Celery with Redis  
 - **External API**: Currency exchange via [exchangerate-api]  
-- **Database**: MySQL (or SQLite for local testing)  
+- **Database**: MySQL   
 - **Frontend**: Django templates with Bootstrap  
 - **Admin Panel**: Django admin for managing subscriptions and plans  
 
@@ -154,9 +154,9 @@ python manage.py runserver
 - Django REST Framework  
 - Celery  
 - Redis  
-- MySQL / SQLite  
+- MySQL  
 - Bootstrap 5  
-- Docker (optional)  
+- Docker 
 
 ---
 
