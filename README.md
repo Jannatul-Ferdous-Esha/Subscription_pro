@@ -1,150 +1,167 @@
-#!/bin/bash
-
-cat << 'EOF' > README.md
 # 🧾 Subscription Management System
 
-A Django-powered application to manage user subscriptions with real-time USD→BDT currency exchange tracking.  
-It includes user-friendly APIs, background rate logging via Celery, and a clean web interface to display subscriptions.
+A **Django-powered** application to manage user subscriptions with **real-time USD→BDT currency exchange tracking**. This project features a user-friendly REST API, background exchange rate logging using **Celery**, and a clean web interface for managing and viewing subscriptions.
 
 ---
 
 ## ⚙️ How It Works
 
 ### 🔗 Core Components
-- **Backend:** Django + Django REST Framework  
-- **Asynchronous Tasks:** Celery with Redis  
-- **External API:** Currency exchange rates (e.g., exchangerate-api.com)  
-- **Database:** MySQL  
-- **Frontend:** Basic Bootstrap template (non-SPA)  
-- **Admin Panel:** Django admin site for managing plans and logs  
+
+- **Backend**: Django + Django REST Framework  
+- **Asynchronous Tasks**: Celery with Redis  
+- **External API**: Currency exchange via [exchangerate-api]  
+- **Database**: MySQL (or SQLite for local testing)  
+- **Frontend**: Django templates with Bootstrap  
+- **Admin Panel**: Django admin for managing subscriptions and plans  
 
 ---
 
 ## 📦 Features in Detail
 
-### 📌 Subscription Plans
-Admin users can create subscription plans via the admin panel. Each plan has:
-- A **name**
-- A **price** (in USD)
-- A **duration** (in days)
+### 1. Subscription Plans
 
-Plans are stored in the \`Plan\` model.
+Admins can create and manage various subscription plans via the admin panel. Each plan includes:
 
----
+- Name  
+- Price (in USD)  
+- Duration (in days)  
 
-### 👤 User Subscriptions
-Authenticated users can subscribe to a plan. Each subscription:
-- Links a user to a plan
-- Has a **start date**, **end date**, and **status**
-- Status updates when cancelled or expired
-
-Subscriptions are stored in the \`Subscription\` model and are created using \`transaction.atomic()\` to ensure data consistency.
+Stored in the `Plan` model.
 
 ---
 
-### ⏳ Background Task with Celery
+### 2. User Subscriptions
 
-A periodic task runs every hour:
-- Fetches the current USD → BDT exchange rate
-- Stores the value in the \`ExchangeRateLog\` model
+Authenticated users can subscribe to any available plan. Each subscription includes:
 
-This is implemented in \`tasks.py\` using Celery and scheduled via Celery Beat. Redis is used as the message broker.
+- Associated user and plan  
+- Start and end date  
+- Status (`active`, `cancelled`, or `expired`)  
 
-To run the workers:
-\`\`\`bash
+Automatically updated upon expiration or cancellation.
+
+---
+
+### 3. Background Task with Celery
+
+A periodic Celery task runs **every hour** to:
+
+- Fetch current USD→BDT exchange rate  
+- Save it to the `ExchangeRateLog` model  
+
+**Message broker**: Redis  
+**Scheduler**: Celery Beat  
+
+To run Celery:
+
+```bash
 celery -A subscription worker -l info
 celery -A subscription beat -l info
-\`\`\`
+```
 
 ---
 
-### 🛠 Admin Panel
+### 4. Admin Panel
 
-Visit \`/admin/\` (as a superuser) to:
-- Add/edit/delete subscription plans
-- View/manage user subscriptions
-- Browse exchange rate logs
+Visit `/admin/` (superuser login required) to:
 
----
-
-### 🌐 Frontend Interface
-
-Visit \`/subscriptions/\` to view a public HTML table listing:
-- Username
-- Plan
-- Start Date
-- End Date
-- Status
-
-Built with Bootstrap + Django templates. No login required.
+- Create/edit/delete subscription plans  
+- Manage user subscriptions  
+- View historical exchange rates  
 
 ---
 
-### 🐳 Docker (Optional)
+### 5. Frontend Interface
 
-If Docker is used, the project supports:
-- **Django App**
-- **Redis** (for Celery)
-- **MySQL** (or SQLite)
+Public-facing subscription list at `/subscriptions/`:
+
+- Username  
+- Plan Name  
+- Start Date  
+- End Date  
+- Status  
+
+Built with Bootstrap 5 and Django templates. No login required.
+
+---
+
+### 6. Docker (Optional)
+
+The project supports containerization with `Dockerfile` and `docker-compose.yml`.
+
+**Services**:
+
+- Django web server  
+- Redis (for Celery)  
+- MySQL (for data persistence)  
 
 To run:
-\`\`\`bash
+
+```bash
 docker-compose up --build
 docker-compose exec web python manage.py migrate
 docker-compose exec web python manage.py createsuperuser
-\`\`\`
+```
 
 ---
 
-## ✅ Setup Instructions (Local without Docker)
+## ✅ Setup Instructions
 
-### Step 1: Clone the Repo
-\`\`\`bash
+### Step 1: Clone the Repository
+
+```bash
 git clone https://github.com/Jannatul-Ferdous-Esha/Subscription_pro.git
 cd Subscription_pro
-\`\`\`
+```
 
-### Step 2: Create & Activate Virtual Environment
-\`\`\`bash
+### Step 2: Create and Activate Virtual Environment
+
+```bash
 python -m venv venv
-source venv/bin/activate  # or venv\Scripts\activate on Windows
-\`\`\`
+source venv/bin/activate      # On Windows: venv\Scripts\activate
+```
 
 ### Step 3: Install Requirements
-\`\`\`bash
+
+```bash
 pip install -r requirements.txt
-\`\`\`
+```
 
 ### Step 4: Apply Migrations
-\`\`\`bash
+
+```bash
 python manage.py migrate
-\`\`\`
+```
 
 ### Step 5: Create Superuser
-\`\`\`bash
-python manage.py createsuperuser
-\`\`\`
 
-### Step 6: Run Server
-\`\`\`bash
+```bash
+python manage.py createsuperuser
+```
+
+### Step 6: Run the Development Server
+
+```bash
 python manage.py runserver
-\`\`\`
+```
 
 ---
 
 ## 🧪 Technologies Used
+
 - Django 5.x  
 - Django REST Framework  
 - Celery  
 - Redis  
-- MySQL  
+- MySQL / SQLite  
 - Bootstrap 5  
-- Docker (optional)
+- Docker (optional)  
 
 ---
 
-## 🙋‍♀️ Author
+## 👩‍💻 Author
 
 **Jannatul Ferdous Esha**  
+📧 jannatul.ferdous.esha11235@gmail.com  
 🔗 [GitHub Profile](https://github.com/Jannatul-Ferdous-Esha)
-EOF
