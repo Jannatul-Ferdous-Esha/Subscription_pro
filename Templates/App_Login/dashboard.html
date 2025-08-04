@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background-color: #f4f8fc;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .subscriptions-container {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    margin-top: 30px;
+    margin-bottom: 50px;
+  }
+
+  h2.section-title {
+    color: #004999;
+    font-weight: 600;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+  }
+
+  table {
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  th {
+    background-color: #e6f0ff;
+    color: #004999;
+  }
+
+  tr:hover {
+    background-color: #f1f8ff;
+  }
+
+  .badge-status {
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    border-radius: 12px;
+  }
+
+  .active { background-color: #28a745; color: white; }
+  .cancelled { background-color: #dc3545; color: white; }
+  .expired { background-color: #ffc107; color: black; }
+
+  .btn-subscribe, .btn-cancel {
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-subscribe {
+    background: linear-gradient(to right, #00b894, #00cec9);
+    color: white;
+  }
+
+  .btn-subscribe:hover {
+    background: linear-gradient(to right, #019875, #00bcd4);
+  }
+
+  .btn-cancel {
+    background-color: #e74c3c;
+    color: white;
+  }
+
+  .btn-cancel:hover {
+    background-color: #c0392b;
+  }
+</style>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-primary" href="{% url 'home' %}">SubscriptionPro</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
+      <ul class="navbar-nav mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="{% url 'App_Login:logout' %}">Logout</a></li>
+        <!-- {% if user.is_authenticated %} -->
+          <!-- <li class="nav-item"><a class="nav-link" href="{% url 'App_Login:logout' %}">Logout</a></li> -->
+        <!-- {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'App_Login:login' %}">Login</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'App_Login:signup' %}">Signup</a></li>  -->
+        <!-- {% endif %}  -->
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-5">
+  <h1 class="text-primary">Welcome, Admin</h1>
+  <p>This is your admin dashboard.</p>
+</div>
+
+<h2 class="section-title">Available Plans</h2>
+
+<!-- Plan Form -->
+<div class="mb-4">
+  <form method="POST" class="row g-3">
+    {% csrf_token %}
+    <div class="col-md-4">
+      {{ plan_form.name.label_tag }} {{ plan_form.name }}
+    </div>
+    <div class="col-md-3">
+      {{ plan_form.price.label_tag }} {{ plan_form.price }}
+    </div>
+    <div class="col-md-3">
+      {{ plan_form.duration_days.label_tag }} {{ plan_form.duration_days }}
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+      <button type="submit" class="btn btn-primary w-100">Add Plan</button>
+    </div>
+  </form>
+</div>
+
+<!-- Plan Table -->
+<div class="table-responsive mb-5">
+  <table class="table table-bordered text-center align-middle">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Price (USD)</th>
+        <th>Duration (Days)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for plan in plans %}
+      <tr>
+        <td>{{ plan.name }}</td>
+        <td>${{ plan.price|floatformat:2 }}</td>
+        <td>{{ plan.duration_days }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="container subscriptions-container">
+
+  <!-- Subscriptions -->
+  <h2 class="section-title">User Subscriptions</h2>
+  <div class="table-responsive mb-5">
+    <table class="table table-bordered text-center align-middle">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Plan</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sub in subscriptions %}
+        <tr>
+          <td>{{ sub.user.username }}</td>
+          <td>{{ sub.plan.name }}</td>
+          <td>{{ sub.start_date }}</td>
+          <td>{{ sub.end_date }}</td>
+          <td>
+            <span class="badge-status {{ sub.status }}">{{ sub.status|title }}</span>
+          </td>
+          <td>
+            {% if sub.status == 'active' %}
+              <button class="btn btn-cancel" onclick="cancel({{ sub.id }})">Cancel</button>
+            {% else %}
+              <span class="text-muted">N/A</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Exchange Rate Log -->
+  <h2 class="section-title">Recent Exchange Rates</h2>
+  <div class="table-responsive">
+    <table class="table table-striped text-center align-middle">
+      <thead>
+        <tr>
+          <th>Base</th>
+          <th>Target</th>
+          <th>Rate</th>
+          <th>Fetched At</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for rate in exchange_rates %}
+        <tr>
+          <td>{{ rate.base }}</td>
+          <td>{{ rate.target }}</td>
+          <td>{{ rate.rate|floatformat:4 }}</td>
+          <td>{{ rate.fetched_at|date:"Y-m-d H:i" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  function subscribe(planId) {
+    fetch('/api/subscribe/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token YOUR_AUTH_TOKEN'  // Replace this dynamically
+      },
+      body: JSON.stringify({ plan_id: planId })
+    })
+    .then(response => response.json())
+    .then(data => {
+      alert("Successfully subscribed!");
+      location.reload();
+    })
+    .catch(err => alert("Subscription failed."));
+  }
+
+  function cancel(subId) {
+    fetch('/api/cancel/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token YOUR_AUTH_TOKEN'  // Replace this dynamically
+      },
+      body: JSON.stringify({ subscription_id: subId })
+    })
+    .then(response => response.json())
+    .then(data => {
+      alert("Subscription cancelled.");
+      location.reload();
+    })
+    .catch(err => alert("Cancellation failed."));
+  }
+</script>
+{% endblock %}

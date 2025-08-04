@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<style>
+  input.form-control,
+  form input,
+  input[type="text"].form-control,
+  input[type="password"].form-control {
+    background-color: white !important;
+    color: black !important;
+  }
+
+  .signup-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .signup-box {
+    background-color: #dbefff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    max-width: 780px;
+    width: 100%;
+  }
+
+  .signup-box h1 {
+    font-size: 48px;
+    color: #0066cc;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-decoration: underline;
+  }
+
+  .btn-signup {
+    background: linear-gradient(to right, #0066cc, #00b4d8);
+    font-size: 32px;
+    padding: 14px 0;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+  }
+
+  .btn-signup:hover {
+    background: linear-gradient(to right, #005bb5, #00a3c9);
+  }
+
+  .login-link {
+    font-size: 24px;
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+
+  .login-link a {
+    font-weight: bold;
+    color: #0066cc;
+    text-decoration: none;
+  }
+
+  .login-link a:hover {
+    color: #004999;
+  }
+</style>
+
+<div class="container signup-container">
+  <div class="signup-box">
+    <h1>Sign Up</h1>
+
+    <form method="post">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <button type="submit" class="btn btn-lg px-5 py-3 text-white shadow-sm btn-signup">Signup</button>
+    </form>
+
+    <div class="login-link">
+      <p>Have an account? <a href="{% url 'App_Login:login' %}">Login</a></p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

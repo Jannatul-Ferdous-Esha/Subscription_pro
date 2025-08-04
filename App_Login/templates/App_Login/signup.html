@@ -1,0 +1,46 @@
+{% extends 'E:\django3-personal-portfolio-master\portfolio\templates\portfolio\base.html' %}
+{% comment %} {% load crispy_forms_tags %} {% endcomment %}
+
+{% comment %} {% block title %} {{ title }} {% endblock %} {% endcomment %}
+{% load static %}
+{% block content %}
+
+<div class="row justify-content-center my-3">
+  <div class="col-5">
+    <img src="{% static 'portfolio/SquareBlonde.jpg' %}" class="img-fluid">
+  </div>
+</div>
+
+<div class="row justify-content-center mb-3">
+  <div class="col-md-9 text-center">
+    <h1 id="hometext" class="font-weight-bold">Empowering Early Detection</h1>
+    <h2 class="font-weight-bold">Your First Step Against Breast Cancer</h2>
+</div>
+
+</div>
+{% endblock %}
+{% block content %}
+<h2 class="mb-4">Sign Up</h2>
+<div class="container mt-5">
+    <h2 class="mb-4">Sign Up</h2>
+    <form method="post">
+        {{ form|crispy }}
+        {% csrf_token %}
+        <button type="submit" class="btn btn-info btn-sm">Signup</button>
+    </form>
+</div>
+{% endblock %} 
+{% comment %} {% extends 'portfolio/base.html' %}  <!-- This should be the first line -->
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <div class="container mt-5">
+    <h2 class="mb-4">Sign Up</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <button type="submit" class="btn btn-info btn-sm">Signup</button>
+    </form>
+  </div>
+{% endblock %} {% endcomment %}
+

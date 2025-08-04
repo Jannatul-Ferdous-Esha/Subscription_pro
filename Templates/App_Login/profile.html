@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+  <div class="p-4 rounded shadow-lg" style="background-color: #f6dbe1; max-width: 800px; width: 100%;">  <!-- Increased form width -->
+    <h1 class="mb-4 text-center font-weight-bold" style="font-size: 40px; color: #f34d83;">{{ title }}</h1>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form|crispy }}
+      
+      <!-- Profile Picture Section with Increased Size -->
+      {% comment %} <div class="text-center">
+        <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="img-fluid rounded-circle" style="width: 200px; height: 200px; object-fit: cover;">
+      </div> {% endcomment %}
+
+      <button type="button" 
+        onclick="window.location.href='{% url 'App_post:new' %}'"
+        class="btn btn-block text-white" 
+        style="background-color: #f34d83; font-size: 25px; padding: 6px 0;">
+    Submit
+  </button>
+    </form>
+  </div>
+  
+</div>
+<div class="text-center mt-4">
+  <p style="font-size: 20px;">
+    Already completed your profile?     
+    <a href="{% url 'App_post:new' %}" style="font-weight: bold; color: #f34d83;">Try the new feature</a>
+  </p>
+</div>
+<div style="height: 50px;"></div>
+
+{% endblock %}
+{% comment %} {% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %} {{ title }} {% endblock %}
+<style>
+
+  /* Aligning the form elements in rows */
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.form-row .col-md-6 {
+  flex: 1;
+  min-width: 200px;
+}
+
+.form-row .col-md-12 {
+  flex: 1;
+}
+
+input, select, textarea {
+  width: 100%; /* Ensures fields fill the container */
+}
+
+/* Reducing address field size */
+textarea {
+  height: 100px; /* Adjust the height of address textarea */
+}
+</style
+{% block content %}
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+  <div class="p-4 rounded shadow-lg" style="background-color: #f6dbe1; max-width: 800px; width: 100%;">  
+    <h1 class="mb-4 text-center font-weight-bold" style="font-size: 40px; color: #f34d83;">{{ title }}</h1>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form|crispy }}
+
+      <!-- Profile Picture Section with Increased Size -->
+      <div class="text-center mb-4">
+        <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="img-fluid rounded-circle" style="width: 200px; height: 200px; object-fit: cover;">
+      </div>
+
+      <!-- Fields in rows using flexbox or grid -->
+      <div class="form-row mb-3">
+        <div class="col-md-6">
+          {{ form.first_name|crispy }}
+        </div>
+        <div class="col-md-6">
+          {{ form.last_name|crispy }}
+        </div>
+      </div>
+
+      <div class="form-row mb-3">
+        <div class="col-md-6">
+          {{ form.dob|crispy }}
+        </div>
+        <div class="col-md-6">
+          {{ form.sex|crispy }}
+        </div>
+      </div>
+
+      <div class="form-row mb-3">
+        <div class="col-md-6">
+          {{ form.phone_number|crispy }}
+        </div>
+        <div class="col-md-6">
+          <!-- Profile Picture uploader (if not handled elsewhere) -->
+          {{ form.profile_pic|crispy }}
+        </div>
+      </div>
+
+      <!-- Address field with reduced size -->
+      <div class="form-row mb-3">
+        <div class="col-md-12">
+          {{ form.address|crispy }}
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-block text-white" style="background-color: #f34d83; font-size: 25px; padding: 6px 0;">
+        Submit
+      </button>
+    </form>
+  </div>
+</div>
+
+<div class="text-center mt-4">
+  <p style="font-size: 20px;">
+    Already completed your profile? 
+    <a href="{% url 'App_post:new' %}" style="font-weight: bold; color: #f34d83;">Try the new feature</a>
+  </p>
+</div>
+
+{% endblock %} {% endcomment %}
